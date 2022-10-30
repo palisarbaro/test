@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controllers_1 = require("./controllers");
+const router = (0, express_1.Router)();
+router.get('/users', controllers_1.userController.getUsers.bind(controllers_1.userController));
+router.post('/users', controllers_1.userController.postUser.bind(controllers_1.userController));
+router.patch('/users', controllers_1.userController.pathcUser.bind(controllers_1.userController));
+router.get('/departments', controllers_1.departmentController.getDepartments.bind(controllers_1.departmentController));
+router.post('/departments', controllers_1.departmentController.postDepartment.bind(controllers_1.departmentController));
+router.delete('/departments', controllers_1.departmentController.deleteDepartments.bind(controllers_1.departmentController));
+router.get('/pc', controllers_1.pcController.getPC.bind(controllers_1.pcController));
+router.post('/pc', controllers_1.pcController.postPC.bind(controllers_1.pcController));
+router.delete('/pc', controllers_1.pcController.deletePCs.bind(controllers_1.pcController));
+exports.default = router;
