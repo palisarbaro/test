@@ -3,10 +3,9 @@
         <br>
         <div class="form">
             <label>{{header.capitalizeFirstLetter()}} name: </label>
-            <input v-model="newRow">
+            <input v-model="newName">
             <br>
             <button @click="addRow">Add {{header}}</button>
-
         </div>
         <br>
         <table v-if="loaded">
@@ -14,17 +13,17 @@
             {{coloumnName}}
         </th>
         <th>
-            <button @click="removeAll()">remove all</button>
+            <button @click="removeIds(this.inUseIds)">remove all</button>
         </th>
         <tr v-for="row in data" v-bind:key="row.id">
             <td>
-            {{row.id}}
+                {{row.id}}
             </td>
             <td>
-            {{row.name}}
+                {{row.name}}
             </td>
             <td>
-                <button :disabled="row.inuse" @click="removeOne(row.id)">remove</button>
+                <button :disabled="row.inuse" @click="removeIds([row.id])">remove</button>
             </td>
         </tr>
         </table>
@@ -49,8 +48,13 @@ export default {
             loaded     : false,
             tableHeader: ['id', 'name'],
             data       : [],
-            newRow     : ''
+            newName    : ''
 
+        }
+    },
+    computed: {
+        inUseIds(){
+            return this.data.filter((obj)=>!obj.inuse).map((obj)=>obj.id)
         }
     },
     methods: {
@@ -62,26 +66,16 @@ export default {
         },
         async addRow(){
             try{
-                await this.$store.dispatch(this.postAction, this.newRow)
-                this.newRow = ''
+                await this.$store.dispatch(this.postAction, this.newName)
+                this.newName = ''
                 await this.updateList()
             }
             catch(e){
                 alert(e.response.data.error)
             }
         },
-        async removeOne(id){
+        async removeIds(ids){
             try{
-                await this.$store.dispatch(this.removeAction, [id])
-                await this.updateList()
-            }
-            catch(e){
-                alert(e.response.data.error)
-            }
-        },
-        async removeAll(){
-            try{
-                const ids = this.data.filter((obj)=>!obj.inuse).map((obj)=>obj.id)
                 await this.$store.dispatch(this.removeAction, ids)
                 await this.updateList()
             }

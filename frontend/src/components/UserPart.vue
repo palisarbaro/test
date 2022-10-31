@@ -48,7 +48,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['getUsers', 'getDepartments', 'getPC', 'postUser', 'updateUserDepartment']),
+        ...mapActions(['getUsers', 'getDepartments', 'updateUserDepartment']),
         async departmentChanged(id, option){
             const department = Number(option.target.value)
             option.target.disabled = true

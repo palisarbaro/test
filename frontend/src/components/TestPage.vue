@@ -1,17 +1,10 @@
 <template>
     <header>
         <select v-model="selected">
-            <option>
-                Users
-            </option>
-            <option>
-                PC
-            </option>
-            <option>
-                Departments
+            <option v-for="opt in options" v-bind:key="opt">
+                {{ opt }}
             </option>
         </select>
-
     </header>
     <main>
         <UserPart v-if="selected=='Users'">
@@ -34,12 +27,11 @@ export default {
     },
     data(){
         return {
-            selected: 'Users'
+            selected: 'Users',
+            options : ['Users', 'PC', 'Departments']
         }
     },
     methods: {
-        //          ...mapActions({ getMessages: 'message/fetch', subscribe: 'message/subscribe', sendMessage: 'message/send' }),
-
     },
     async mounted(){
     },

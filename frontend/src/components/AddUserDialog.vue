@@ -1,5 +1,5 @@
 <template>
-<button @click="addUser1">Add user</button>
+<button @click="openDialog">Add user</button>
 <div :class="{dialog_container: true, closed:dialog_closed}" @click="closeDialog()">
     <dialog ref="dialog" @click.prevent.stop>
         <div class="dialog_content">
@@ -43,7 +43,7 @@
                     </td>
                 </tr>
             </table>
-            <button @click="addUser2">Add user</button>
+            <button @click="addUser">Add user</button>
         </div>
     </dialog>
 </div>
@@ -61,7 +61,6 @@ export default {
     data(){
         return {
             computersObj      : {},
-            departments       : [],
             departmentsObj    : {},
             selectedPC        : null,
             selectedDepartment: null,
@@ -71,12 +70,12 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['getUsers', 'getDepartments', 'getPC', 'postUser', 'updateUserDepartment']),
-        addUser1(){
+        ...mapActions(['getDepartments', 'getPC', 'postUser']),
+        openDialog(){
             this.$refs.dialog.show()
             this.dialog_closed = false
         },
-        async addUser2(){
+        async addUser(){
             try{
                 await this.postUser({ name: this.username, salary: this.salary, pc: Number(this.selectedPC) || null, department: Number(this.selectedDepartment) || null } )
                 this.salary = 0
@@ -89,7 +88,7 @@ export default {
             }
             finally{
                 this.closeDialog()
-                this.updateDialog()
+                this.updateInfo()
                 this.update()
             }
         },
@@ -103,11 +102,10 @@ export default {
                 $event.preventDefault()
             }
         },
-        async updateDialog(){
-            const departments = await this.getDepartments()
-            this.departments = departments.data.departments
+        async updateInfo(){
+            const departments = (await this.getDepartments()).data.departments
             this.departmentsObj = {}
-            for(let dep of this.departments){
+            for(let dep of departments){
                 this.departmentsObj[dep.id] = dep.name
             }
 
@@ -121,7 +119,7 @@ export default {
         }
     },
     async mounted(){
-        this.updateDialog()
+        this.updateInfo()
     },
 }
 </script>
@@ -131,16 +129,18 @@ export default {
 <style  lang="scss">
 @import '../vars.scss';
 .dialog_container{
-    &.closed{
-        background: rgba(0,0,0,0);
-        z-index: -100;
-    }
     background: rgba(0,0,0,0.5);
     position: fixed;
     left: 0;
     top: 0;
     bottom: 0;
     right: 0;
+
+    &.closed{
+        background: rgba(0,0,0,0);
+        z-index: -100;
+    }
+
     dialog{
         border-radius: 10px;
         background-color: $light;
@@ -171,9 +171,10 @@ export default {
     button{
         width: 100%;
     }
+    .dialog_content{
+        width: 420px;
+    }
 }
-.dialog_content{
-    width: 420px;
-}
+
 
 </style>
